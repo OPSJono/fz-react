@@ -1,27 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import Navigation from './components/Navigation.jsx';
 
-function App() {
-  return (
-      <div className="App" >
-        <div className="w-full mt-10 m-auto max-w-md" >
-          <form action="" className=" bg-white shadow-md rounded px-8 py-8 pt-8">
-            <img src={logo} className="App-logo" alt="logo" />
-            <div className="px-4 pb-4">
-              <label htmlFor="email" className="text-sm block font-bold  pb-2">EMAIL ADDRESS</label>
-              <input type="email" name="email" id="" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-blue-300 " placeholder="Johnbull@example.com"/>
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import * as RegIcons from '@fortawesome/free-regular-svg-icons';
+import * as SolidIcons from '@fortawesome/free-solid-svg-icons';
+
+const solidIconList = Object
+    .keys(SolidIcons)
+    .filter(key => key !== "fas" && key !== "prefix" )
+    .map(icon => SolidIcons[icon]);
+
+library.add(...solidIconList);
+
+const RegIconList = Object
+    .keys(RegIcons)
+    .filter(key => key !== "fas" && key !== "prefix" )
+    .map(icon => RegIcons[icon]);
+
+library.add(...RegIconList);
+
+library.add(fab);
+
+class App extends Component {
+
+    state = {
+        auth: {
+            authenticated: false,
+            access_token: '',
+            refresh_token: '',
+        },
+    };
+
+    render() {
+        return (
+            <div className="App" >
+                <Navigation
+                    auth={this.state.auth}
+                />
+                <div className="container w-full mx-auto pt-20 min-h-screen">
+                    <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
+                        <div className="flex flex-wrap">
+                            <div className="w-full p-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div  className="px-4 pb-4">
-              <label htmlFor="password" className="text-sm block font-bold pb-2">PASSWORD</label>
-              <input type="password" name="email" id="" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-blue-300" placeholder="Enter your password"/>
-            </div>
-            <div className="px-4 pt-2">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">Sign In</button>
-            </div>
-          </form>
-        </div>
-      </div>
-  );
+        );
+    };
 }
 
 export default App;
