@@ -606,6 +606,8 @@ video {
   }
 }
 
+@import "./components/menu.scss";
+
 .sr-only {
   position: absolute;
   width: 1px;

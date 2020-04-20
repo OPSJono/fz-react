@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Navigation from './components/Navigation.jsx';
+import { BrowserRouter } from 'react-router-dom';
+import Layout from './components/Layout.jsx';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -33,20 +34,11 @@ class App extends Component {
     };
 
     render() {
+
         return (
-            <div className="App" >
-                <Navigation
-                    auth={this.state.auth}
-                />
-                <div className="container w-full mx-auto pt-20 min-h-screen">
-                    <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
-                        <div className="flex flex-wrap">
-                            <div className="w-full p-3">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BrowserRouter>
+                <Layout auth={this.state.auth}/>
+            </BrowserRouter>
         );
     };
 }
