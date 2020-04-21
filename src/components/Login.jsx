@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import {Link} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class Login extends Component {
 
     render() {
         return (
             <React.Fragment>
-                <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-                        <span className="fas fa-lock fa-4x text-blue-400 pr-3"/>
+                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
+                    <div className="md:w-full lg:w-1/2 mx-auto text-center">
+                        <FontAwesomeIcon icon={"lock"} className="fa-4x text-blue-400 pr-3" />
                         <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
                             Sign in to your account
                         </h2>
                     </div>
 
-                    <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                    <div className="mt-8 md:w-full lg:w-1/2 mx-auto">
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <form action="/login" method="POST">
                                 <div>
