@@ -47,7 +47,7 @@ class Home extends Component {
     landingPage = () => {
         return (
             <React.Fragment>
-                <span className={"text-gray-400"}>Welcome to the filezone appliccation. Please login.</span>
+                <span className={"text-gray-400"}>Welcome to the filezone application. Please login.</span>
             </React.Fragment>
         );
     }

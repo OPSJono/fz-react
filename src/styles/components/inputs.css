@@ -1,0 +1,32 @@
+input.checkbox {
+    @apply border-gray-800 bg-gray-800 text-sm text-gray-400 transition border rounded py-1 px-2 leading-normal;
+
+    &:focus {
+        @apply outline-none border-gray-600;
+    }
+
+    &.has-error {
+        @apply border-red-800;
+    }
+}
+
+input.input, select.input {
+    /* Same as checkbox, but with added 'w-full'*/
+    @apply w-full border-gray-800 bg-gray-800 text-sm text-gray-400 transition border rounded py-1 px-2 leading-normal;
+
+    &:focus {
+        @apply outline-none border-gray-600;
+    }
+
+    &.has-error {
+        @apply border-red-800;
+    }
+}
+
+
+
+label.label {
+    @apply text-gray-600 font-bold;
+}
+
+

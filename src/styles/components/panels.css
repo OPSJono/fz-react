@@ -1,0 +1,9 @@
+.panel {
+    @apply bg-gray-900 border border-gray-800 rounded shadow;
+
+    & .panel-heading {
+        @apply w-full flex-grow flex items-center w-auto block mt-2 mt-0 bg-gray-900 z-20 border-b border-gray-800 p-3;
+    }
+}
+
+

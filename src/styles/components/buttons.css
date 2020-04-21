@@ -1,0 +1,81 @@
+.btn {
+    @apply py-2 px-3 border border-transparent text-sm font-medium rounded-md text-gray-200 transition duration-150 ease-in-out;
+
+    &:focus, &:active {
+        @apply outline-none border-indigo-700;
+    }
+}
+
+.btn-default {
+    @apply bg-blue-900 text-gray-300;
+
+    &:hover {
+        @apply bg-blue-800;
+    }
+}
+
+.btn-primary {
+    @apply bg-indigo-700 text-gray-300;
+
+    &:hover, &:active {
+        @apply bg-indigo-600;
+    }
+}
+
+.btn-secondary {
+    @apply bg-purple-700 text-gray-300;
+
+    &:hover {
+        @apply bg-purple-600;
+    }
+}
+
+.btn-tertiary {
+    @apply bg-pink-700 text-gray-300;
+
+    &:hover {
+        @apply bg-pink-600;
+    }
+}
+
+.btn-info {
+    @apply bg-blue-700 text-gray-300;
+
+    &:hover {
+        @apply bg-blue-600;
+    }
+}
+
+.btn-info-alt {
+    @apply bg-teal-700 text-gray-300;
+
+    &:hover {
+        @apply bg-teal-600;
+    }
+}
+
+.btn-success {
+    @apply bg-green-700 text-gray-300;
+
+    &:hover {
+        @apply bg-green-600;
+    }
+}
+
+.btn-warning {
+    @apply bg-orange-700 text-gray-300;
+
+    &:hover {
+        @apply bg-orange-600;
+    }
+}
+
+.btn-danger {
+    @apply bg-red-700 text-gray-300;
+
+    &:hover {
+        @apply bg-red-600;
+    }
+}
+
+
