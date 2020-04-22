@@ -68,12 +68,22 @@ class Login extends Component {
 
                                 <div className="mt-6">
                                     <span className="block w-full rounded-md shadow-sm">
-                                        <button type="submit" className="w-full flex justify-center btn btn-primary">
+                                        <button type="submit" className="w-full flex justify-center btn btn-success">
                                           Sign in
                                         </button>
                                     </span>
                                 </div>
                             </form>
+                            <div className="mt-6">
+                                <div className="block text-sm font-medium leading-5 text-gray-400">
+                                    Don't have an account?
+                                </div>
+                                <div className="mt-1 block w-full rounded-md shadow-sm">
+                                    <Link to="/register" className="w-full flex justify-center btn btn-default">
+                                        Register for free
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
