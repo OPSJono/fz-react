@@ -1,8 +1,28 @@
 import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import axios from 'axios';
 
 class Login extends Component {
+
+    static CLIENT_ID = '2';
+    static CLIENT_SECRET = 'k2useT2XqbCWwLOdSg1kngBFdXao7ukrWY05ot20';
+
+    async handleSubmit(event) {
+        event.preventDefault();
+
+        // NOTE: you access FormData fields with `data.get(fieldName)`
+        const data = new FormData(event.target);
+
+        data.set('grant_type', 'password');
+        data.set('client_id', Login.CLIENT_ID);
+        data.set('client_secret', Login.CLIENT_SECRET);
+        data.set('username', data.get('email'));
+
+        let result = await axios.post('http://filezone.docker/v1/oauth/token', data);
+
+        console.log(result.data);
+    }
 
     render() {
         return (
@@ -17,7 +37,7 @@ class Login extends Component {
 
                     <div className="mt-8 md:w-full lg:w-1/2 mx-auto">
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                            <form action="/login" method="POST">
+                            <form action="/login" method="POST" onSubmit={this.handleSubmit}>
                                 <div>
                                     <label htmlFor="email"
                                            className="block text-sm font-medium leading-5 text-gray-400">
