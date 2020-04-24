@@ -33,11 +33,20 @@ class App extends Component {
         },
     };
 
-    render() {
+    setCurrentUser = (response) => {
+        this.setState({
+            auth: {
+                authenticated: response.access_token.length > 0,
+                access_token: response.access_token,
+                refresh_token: response.refresh_token,
+            }
+        })
+    }
 
+    render() {
         return (
             <BrowserRouter>
-                <Layout auth={this.state.auth}/>
+                <Layout auth={this.state.auth} setCurrentUser={this.setCurrentUser}/>
             </BrowserRouter>
         );
     };

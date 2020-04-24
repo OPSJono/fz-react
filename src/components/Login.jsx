@@ -46,12 +46,10 @@ class Login extends Component {
             this.setState({
                 errors: result.data.errors
             });
-
-            console.log(this.state);
-
         }
-        console.log(result.data);
-    }
+
+        this.props.setCurrentUser(result.data);
+    };
 
     inputFor = (fieldName = 'input', type = 'text', required = false) => {
         let classNamesForInput = "border-gray-600 w-full bg-gray-800 text-sm text-gray-400 transition border focus:outline-none focus:border-gray-600 rounded p-2 leading-normal";

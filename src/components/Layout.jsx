@@ -31,7 +31,9 @@ class Home extends Component {
                                             <Route exact path="/">
                                                 {this.landingPage()}
                                             </Route>
-                                            <Route path="/login" component={Login} />
+                                            <Route path="/login">
+                                                <Login setCurrentUser={this.props.setCurrentUser} />
+                                            </Route>
                                             <Route path="/register" component={Register} />
                                         </Switch>
                                     </div>
