@@ -5,10 +5,14 @@ import axios from 'axios';
 
 class Login extends Component {
 
+    state = {
+        errors: {},
+    };
+
     static CLIENT_ID = '2';
     static CLIENT_SECRET = 'k2useT2XqbCWwLOdSg1kngBFdXao7ukrWY05ot20';
 
-    async handleSubmit(event) {
+    handleSubmit = async (event) => {
         event.preventDefault();
 
         // NOTE: you access FormData fields with `data.get(fieldName)`
@@ -19,10 +23,74 @@ class Login extends Component {
         data.set('client_secret', Login.CLIENT_SECRET);
         data.set('username', data.get('email'));
 
+        let tmpErrors = {};
+
+        if(data.get('email').length < 2) {
+            tmpErrors.email = ["The Email field is required"];
+        }
+        if(data.get('password').length < 2) {
+            tmpErrors.password = ["The Password field is required"];
+        }
+
+        if(tmpErrors.email || tmpErrors.password) {
+            this.setState({
+                errors: tmpErrors
+            });
+            return;
+        }
+
+
         let result = await axios.post('http://filezone.docker/v1/oauth/token', data);
 
+        if(result.status !== 200 && result.data.errors.length > 0) {
+            this.setState({
+                errors: result.data.errors
+            });
+
+            console.log(this.state);
+
+        }
         console.log(result.data);
     }
+
+    inputFor = (fieldName = 'input', type = 'text', required = false) => {
+        let classNamesForInput = "border-gray-600 w-full bg-gray-800 text-sm text-gray-400 transition border focus:outline-none focus:border-gray-600 rounded p-2 leading-normal";
+
+        let errorMessage = '';
+
+        if(this.hasError(fieldName)) {
+            classNamesForInput = "border-red-600 " + classNamesForInput;
+            errorMessage = (
+                <span className="invalid-feedback text-red-600" role="alert">
+                    <strong>{this.getError(fieldName)}</strong>
+                </span>
+            );
+        }
+
+        let input = (<input id={fieldName} name={fieldName} type={type} autoComplete={fieldName}
+            className={classNamesForInput}/>);
+
+        if(required) {
+                input = (<input id={fieldName} name={fieldName} type={type} autoComplete={fieldName}
+                    className={classNamesForInput} required />);
+        }
+
+        return (
+            <React.Fragment>
+                {input}
+                {errorMessage}
+            </React.Fragment>
+
+        );
+    };
+
+    hasError = fieldName => {
+        return this.getError(fieldName)
+    };
+
+    getError = fieldName => {
+        return this.state.errors[fieldName];
+    };
 
     render() {
         return (
@@ -44,12 +112,7 @@ class Login extends Component {
                                         Email address
                                     </label>
                                     <div className="mt-1 rounded-md shadow-sm">
-                                        <input id="email" name="email" type="email" required
-                                               autoComplete="email"
-                                               className="border-red-600 border-gray-600 w-full bg-gray-800 text-sm text-gray-400 transition border focus:outline-none focus:border-gray-600 rounded p-2 leading-normal"/>
-                                        <span className="invalid-feedback text-red-600" role="alert">
-                                            <strong>Form error message</strong>
-                                        </span>
+                                        {this.inputFor('email', 'email', true)}
                                     </div>
                                 </div>
 
@@ -59,12 +122,7 @@ class Login extends Component {
                                         Password
                                     </label>
                                     <div className="mt-1 rounded-md shadow-sm">
-                                        <input id="password" name="password" type="password" required
-                                               autoComplete="current-password"
-                                               className="border-red-600 border-gray-600 w-full bg-gray-800 text-sm text-gray-400 transition border focus:outline-none focus:border-gray-600 rounded p-2 leading-normal"/>
-                                        <span className="invalid-feedback text-red-600" role="alert">
-                                            <strong>Form error message</strong>
-                                        </span>
+                                        {this.inputFor('password', 'password', true)}
                                     </div>
                                 </div>
 
