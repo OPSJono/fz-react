@@ -33,15 +33,26 @@ class App extends Component {
         },
     };
 
+    constructor() {
+        super();
+        let currentUser = localStorage.getItem('auth');
+        if(currentUser && currentUser.length > 1) {
+            currentUser = JSON.parse(currentUser);
+            this.state = currentUser;
+        }
+    };
+
     setCurrentUser = (response) => {
-        this.setState({
+        const auth = {
             auth: {
                 authenticated: response.access_token.length > 0,
                 access_token: response.access_token,
                 refresh_token: response.refresh_token,
             }
-        })
-    }
+        };
+        this.setState(auth);
+        localStorage.setItem('auth', JSON.stringify(auth));
+    };
 
     render() {
         return (
