@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import axios from 'axios';
 
@@ -40,15 +40,16 @@ class Login extends Component {
         }
 
 
-        let result = await axios.post('http://filezone.docker/v1/oauth/token', data);
+        await axios.post('http://filezone.docker/v1/oauth/token', data)
+            .then(response => {
+                this.props.setCurrentUser(response.data);
 
-        if(result.status !== 200 && result.data.errors.length > 0) {
-            this.setState({
-                errors: result.data.errors
+            })
+            .catch(error => {
+                this.setState({
+                    errors: error.response.data.errors,
+                });
             });
-        }
-
-        this.props.setCurrentUser(result.data);
     };
 
     inputFor = (fieldName = 'input', type = 'text', required = false) => {
@@ -91,6 +92,11 @@ class Login extends Component {
     };
 
     render() {
+
+        if(this.props.isAuthenticated() === true) {
+            return (<Redirect to="/" />)
+        }
+
         return (
             <React.Fragment>
                 <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">

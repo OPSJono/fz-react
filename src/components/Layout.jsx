@@ -8,12 +8,17 @@ import Register from "./Register";
 
 class Home extends Component {
 
+    isAuthenticated = () => {
+        return this.props.auth.authenticated === true;
+    };
+
     render() {
         return (
             <React.Fragment>
                 <div className="App" >
                     <Navigation
                         auth={this.props.auth}
+                        isAuthenticated={this.isAuthenticated}
                     />
                     <div className="container w-full mx-auto pt-20 min-h-screen">
                         <div className="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
@@ -32,9 +37,11 @@ class Home extends Component {
                                                 {this.landingPage()}
                                             </Route>
                                             <Route path="/login">
-                                                <Login setCurrentUser={this.props.setCurrentUser} />
+                                                <Login setCurrentUser={this.props.setCurrentUser} isAuthenticated={this.isAuthenticated} />
                                             </Route>
-                                            <Route path="/register" component={Register} />
+                                            <Route path="/register">
+                                                <Register isAuthenticated={this.isAuthenticated} />
+                                            </Route>
                                         </Switch>
                                     </div>
                                 </div>
