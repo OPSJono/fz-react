@@ -1,37 +1,64 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link, withRouter } from "react-router-dom";
+import {Link, Redirect, withRouter} from "react-router-dom";
 
 class Navigation extends Component {
 
-    items = [
+    state = {
+        menuItems: [],
+    };
+
+    baseItems = [
         {
             path: '/',
             text: 'Home',
             icon: 'home'
         },
-        {
-            path: '/login',
-            text: 'Login',
-            icon: 'lock'
-        },
-        {
-            path: '/register',
-            text: 'Register',
-            icon: 'lock'
-        }
     ];
 
     handleClick = (path) => {
         this.props.history.push(path);
     };
 
+    componentDidMount() {
+        if(this.props.isAuthenticated() === true) {
+            const menuItems = [
+                ...this.baseItems,
+                {
+                    path: '/logout',
+                    text: 'Logout',
+                    icon: 'lock'
+                },
+            ];
+            this.setState({
+                menuItems: menuItems
+            });
+        } else {
+            const menuItems = [
+                ...this.baseItems,
+                {
+                    path: '/login',
+                    text: 'Login',
+                    icon: 'lock'
+                },
+                {
+                    path: '/register',
+                    text: 'Register',
+                    icon: 'lock'
+                }
+            ];
+            this.setState({
+                menuItems: menuItems
+            });
+        }
+    }
+
     menuItems = () => {
         return (
             <div className="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20"
                  id="nav-content">
                 <ul className="list-reset lg:flex flex-1 items-center px-4 md:px-0">
-                    {this.items.map(item => (
+                    {this.state.menuItems.map(item => (
                         <li key={item.path} onClick={this.handleClick.bind(item.path)} className="mr-6 my-2 md:my-0">
                             <Link to={item.path}
                                   className={this.props.location.pathname === item.path
