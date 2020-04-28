@@ -4,9 +4,10 @@ import { Switch, Route } from "react-router-dom";
 import Navigation from "./Navigation";
 
 import Login from "./Login";
+import Logout from "./Logout";
 import Register from "./Register";
 
-class Home extends Component {
+class Layout extends Component {
 
     isAuthenticated = () => {
         return this.props.auth.authenticated === true;
@@ -42,6 +43,9 @@ class Home extends Component {
                                             <Route path="/register">
                                                 <Register isAuthenticated={this.isAuthenticated} />
                                             </Route>
+                                            <Route path="/logout">
+                                                <Logout isAuthenticated={this.isAuthenticated} removeCurrentUser={this.props.removeCurrentUser} />
+                                            </Route>
                                         </Switch>
                                     </div>
                                 </div>
@@ -65,4 +69,4 @@ class Home extends Component {
 
 }
 
-export default Home;
+export default Layout;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {Link, Redirect, withRouter} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 
 class Navigation extends Component {
 
@@ -8,34 +8,33 @@ class Navigation extends Component {
         menuItems: [],
     };
 
-    baseItems = [
-        {
-            path: '/',
-            text: 'Home',
-            icon: 'home'
-        },
-    ];
-
     handleClick = (path) => {
         this.props.history.push(path);
     };
 
-    componentDidMount() {
-        if(this.props.isAuthenticated() === true) {
-            const menuItems = [
-                ...this.baseItems,
+    static getDerivedStateFromProps(props, state) {
+        const baseItems = [
+            {
+                path: '/',
+                text: 'Home',
+                icon: 'home'
+            },
+        ];
+
+        let menuItems = [];
+
+        if(props.auth.authenticated === true) {
+            menuItems = [
+                ...baseItems,
                 {
                     path: '/logout',
                     text: 'Logout',
                     icon: 'lock'
                 },
             ];
-            this.setState({
-                menuItems: menuItems
-            });
         } else {
-            const menuItems = [
-                ...this.baseItems,
+            menuItems = [
+                ...baseItems,
                 {
                     path: '/login',
                     text: 'Login',
@@ -47,10 +46,11 @@ class Navigation extends Component {
                     icon: 'lock'
                 }
             ];
-            this.setState({
-                menuItems: menuItems
-            });
         }
+
+        return {
+            menuItems: menuItems
+        };
     }
 
     menuItems = () => {

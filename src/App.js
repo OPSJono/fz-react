@@ -54,10 +54,22 @@ class App extends Component {
         localStorage.setItem('auth', JSON.stringify(auth));
     };
 
+    removeCurrentUser = () => {
+        const auth = {
+            auth: {
+                authenticated: false,
+                access_token: '',
+                refresh_token: '',
+            }
+        };
+        this.setState(auth);
+        localStorage.removeItem('auth');
+    };
+
     render() {
         return (
             <BrowserRouter>
-                <Layout auth={this.state.auth} setCurrentUser={this.setCurrentUser}/>
+                <Layout auth={this.state.auth} setCurrentUser={this.setCurrentUser} removeCurrentUser={this.removeCurrentUser}/>
             </BrowserRouter>
         );
     };
