@@ -44,7 +44,7 @@ class Layout extends Component {
                                                 <Register isAuthenticated={this.isAuthenticated} />
                                             </Route>
                                             <Route path="/logout">
-                                                <Logout isAuthenticated={this.isAuthenticated} removeCurrentUser={this.props.removeCurrentUser} />
+                                                <Logout token={this.props.auth.access_token} removeCurrentUser={this.props.removeCurrentUser} />
                                             </Route>
                                         </Switch>
                                     </div>
