@@ -1,0 +1,1 @@
+export const BASE_DOMAIN = 'http://filezone.docker';

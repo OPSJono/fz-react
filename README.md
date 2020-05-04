@@ -1,5 +1,16 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Running locally
+
+This project uses Docker-compose to run locally.  
+```
+docker-compose up
+```   
+Then you can access the application on http://localhost:3001
+
+This React App requires the API also be running locally.  
+The `BASE_DOMAIN` varaible set in `constants/api.js` must be set to the domain (and any port) that the API is running on locally.
+
 ## Available Scripts
 
 In the project directory, you can run:

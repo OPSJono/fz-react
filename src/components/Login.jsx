@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import {Link, Redirect} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import DynamicForm from './DynamicForm.jsx';
+import * as api from '../constants/api.js';
 
 class Login extends Component {
 
     formRequest = () => {
         return {
-            request_uri: 'http://filezone.docker/v1/oauth/token',
+            request_uri: api.BASE_DOMAIN+'/v1/oauth/token',
             request_method: 'POST',
             request_headers: {
                 headers: { Authorization: "Bearer " + this.props.token }
@@ -68,7 +69,7 @@ class Login extends Component {
 
                     <div className="mt-8 md:w-full lg:w-1/2 mx-auto">
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                            <DynamicForm loginForm={true} request={this.formRequest} fields={this.formFields} />
+                            <DynamicForm loginForm={true} request={this.formRequest} fields={this.formFields} callback={this.props.setCurrentUser} />
                             <div className="mt-6">
                                 <div className="block text-sm font-medium leading-5 text-gray-400">
                                     Don't have an account?

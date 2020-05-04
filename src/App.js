@@ -43,6 +43,10 @@ class App extends Component {
     };
 
     setCurrentUser = (response) => {
+        // Handle a plain object or an axios response object
+        if(response.data) {
+            response = response.data;
+        }
         const auth = {
             auth: {
                 authenticated: response.access_token.length > 0,

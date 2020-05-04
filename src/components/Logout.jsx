@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import * as api from '../constants/api.js';
 
 class Logout extends Component {
 
@@ -11,7 +12,7 @@ class Logout extends Component {
     };
 
     componentDidMount = async () => {
-        await axios.post('http://filezone.docker/v1/oauth/logout', {}, {
+        await axios.post(api.BASE_DOMAIN+'/v1/oauth/logout', {}, {
             headers: { Authorization: "Bearer " + this.props.token }
         })
             .then(response => {

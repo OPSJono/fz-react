@@ -3,12 +3,13 @@ import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import axios from 'axios';
 import renderHTML from 'react-render-html';
+import * as api from '../constants/api.js';
 
 class DynamicForm extends Component {
 
     state = {
         request_details: {
-            request_uri: 'http://filezone.docker/v1/oauth/token',
+            request_uri: api.BASE_DOMAIN+'/v1/oauth/token',
             request_method: 'POST',
             request_headers: {
                 headers: { Authorization: "Bearer " + this.props.token }
@@ -132,7 +133,7 @@ class DynamicForm extends Component {
         }
 
 
-        await axios.post('http://filezone.docker/v1/oauth/token', data)
+        await axios.post(api.BASE_DOMAIN+'/v1/oauth/token', data)
             .then(response => {
                 if(typeof this.props.callback === "function") {
                     this.props.callback(response);

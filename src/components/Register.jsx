@@ -3,6 +3,7 @@ import {Link, Redirect} from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import * as api from '../constants/api.js';
 
 class Register extends Component {
 
@@ -45,7 +46,7 @@ class Register extends Component {
             return;
         }
 
-        await axios.post('http://filezone.docker/v1/oauth/register', data)
+        await axios.post(api.BASE_DOMAIN+'/v1/oauth/register', data)
             .then(response => {
                 this.setState({
                     errors: {},
