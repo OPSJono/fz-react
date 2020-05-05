@@ -121,27 +121,31 @@ class Register extends Component {
     };
 
     handleResend = async () => {
-        // await axios.post(api.BASE_DOMAIN+'/v1/oauth/register', data)
-        //     .then(response => {
-        //         this.setState({
-        //             errors: {},
-        //             result: response.data,
-        //         });
-        //     })
-        //     .catch(error => {
-        //         this.setState({
-        //             errors: error.response.data.errors,
-        //             result: {},
-        //         });
-        //     });
-        this.setState({
-            ...this.state,
-            result: {
-                ...this.state.result,
-                resent: true
-            }
-        });
-        alert('Email should arrive shortly. Please check your spam folder.');
+        const data = {
+            user_id: this.state.result.data.id
+        };
+        await axios.post(api.BASE_DOMAIN+'/v1/oauth/verification/request', data)
+            .then(response => {
+                this.setState({
+                    ...this.state,
+                    result: {
+                        ...this.state.result,
+                        resent: true,
+                        resent_error: false,
+                    }
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    ...this.state,
+                    result: {
+                        ...this.state.result,
+                        resent: false,
+                        resent_error: true,
+                    }
+                });
+                console.error(error);
+            });
     };
 
     success = () => {
@@ -219,9 +223,47 @@ class Register extends Component {
         );
     };
 
+    resentFailed = () => {
+        let email = 'No email provided';
+        if(this.state.result && this.state.result.data && this.state.result.data.email) {
+            email = this.state.result.data.email;
+        }
+
+        return (
+            <React.Fragment>
+                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
+                    <div className="md:w-full lg:w-1/2mx-auto text-center">
+                        <FontAwesomeIcon icon={"times"} className="fa-4x text-blue-400 pr-3" />
+                        <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
+                            Verification email failed
+                        </h2>
+                    </div>
+
+                    <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
+                        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                            <div className="text-center">
+                                <h4 className="block font-bold leading-5 text-gray-400">
+                                    Sorry, it seems we have not been able to send a verification email to: <br /> <br />
+                                    <span className="font-normal italic">{ email }</span>
+                                </h4>
+                                <p className="block font-normal leading-5 text-gray-400 mt-6">
+                                    If this problem persists please get in touch with support.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+    };
+
     render() {
         if(this.props.isAuthenticated() === true) {
             return (<Redirect to="/" />)
+        }
+
+        if(typeof this.state.result.resent_error && this.state.result.resent_error === true) {
+            return this.resentFailed();
         }
 
         if(this.state.result.resent && this.state.result.resent === true) {
