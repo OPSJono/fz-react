@@ -118,22 +118,45 @@ class DynamicForm extends Component {
 
         let tmpErrors = {};
 
-        if(data.get('username').length < 2) {
-            tmpErrors.username = ["The Email field is required"];
-        }
-        if(data.get('password').length < 2) {
-            tmpErrors.password = ["The Password field is required"];
-        }
+        Object.keys(this.state.fields).map((key, number) => {
+            // Name of the field for validation purposes
+            const fieldName = this.state.fields[key].name;
 
-        if(tmpErrors.email || tmpErrors.password) {
+            const fieldLabel = this.state.fields[key].label.toLowerCase();
+
+            // Handle min length validation
+            if(this.state.fields[key].rules.min && data.get(fieldName).length < this.state.fields[key].rules.min) {
+                if(this.state.fields[key].rules.required || data.get(fieldName).length > 0) {
+                    tmpErrors[fieldName] = ["The "+fieldLabel+" field must be at least "+this.state.fields[key].rules.min+" characters."];
+                }
+            }
+            // Handle max length validation
+            if(this.state.fields[key].rules.max && data.get(fieldName).length > this.state.fields[key].rules.max) {
+                if(this.state.fields[key].rules.required || data.get(fieldName).length > 0) {
+                    tmpErrors[fieldName] = ["The "+fieldLabel+" field must be at most "+this.state.fields[key].rules.max+" characters."];
+                }
+            }
+
+            // Handle required validation
+            if(this.state.fields[key].rules.required && (!data.get(fieldName) || data.get(fieldName).length === 0)) {
+                tmpErrors[fieldName] = ["The "+fieldLabel+" field is required."];
+            }
+        });
+
+        if(Object.keys(tmpErrors).length > 0) {
+            // If any client side errors are detected. Set them in the state and abort.
             this.setState({
-                errors: tmpErrors
+                ...this.state,
+                errors: {
+                    ...this.state.errors,
+                    fields: tmpErrors,
+                },
             });
+
             return;
         }
 
-
-        await axios.post(api.BASE_DOMAIN+'/v1/oauth/token', data)
+        await axios.post(this.state.request_details.request_uri, data, this.state.request_details.request_headers)
             .then(response => {
                 if(typeof this.props.callback === "function") {
                     this.props.callback(response);
@@ -192,8 +215,9 @@ class DynamicForm extends Component {
                 this.setState({
                     ...this.state,
                     errors: errors,
-                });
             });
+        });
+
     };
 
     textInput = field => {
@@ -212,19 +236,19 @@ class DynamicForm extends Component {
 
         let input = '<input id="'+field.id+'" name="'+field.name+'" type="'+field.type+'" autoComplete="'+field.id+'" className="'+classNamesForInput+'"';
         if(field.rules.required) {
-            input += 'required';
+            input += ' required';
         }
         if(field.rules.min > 0) {
-            input += 'min="'+field.rules.min+'"';
+            input += ' min="'+field.rules.min+'"';
         }
         if(field.rules.max > 0) {
-            input += 'max="'+field.rules.max+'"';
+            input += ' max="'+field.rules.max+'"';
         }
-        if(field.rules.pattern !== null) {
-            input += 'pattern="'+field.rules.regex+'"';
+        if(field.rules.pattern != null) {
+            input += ' pattern="'+field.rules.regex+'"';
         }
-        if(field.placeholder !== null) {
-            input += 'placeholder="'+field.placeholder+'"';
+        if(field.placeholder != null) {
+            input += ' placeholder="'+field.placeholder+'"';
         }
         input += " />";
 
@@ -249,17 +273,28 @@ class DynamicForm extends Component {
     };
 
     hasError = fieldName => {
-        return this.getError(fieldName)
+        if(this.state.errors) {
+            if(this.state.errors.fields && this.state.errors.fields[fieldName]) {
+                return true;
+            }
+        }
+        return false;
     };
 
     getError = fieldName => {
-        return this.state.errors[fieldName];
+        if(this.state.errors) {
+            if(this.state.errors.fields[fieldName]) {
+                return this.state.errors.fields[fieldName];
+            }
+        }
+
+        return null;
     };
 
     renderField = field => {
-        const specialFieldTypes = ["checkbox", "radio", "file"];
+        const suportedFields = ["text", "password", "email"];
 
-        if(specialFieldTypes.includes(field.type)) {
+        if(!suportedFields.includes(field.type)) {
             return 'Unsupported field type';
         }
 

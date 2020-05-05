@@ -27,7 +27,7 @@ class Login extends Component {
                 name: 'username',
                 type: 'email',
                 label: 'Email',
-                placeholder: 'Enter your Email address',
+                placeholder: 'johnsmith@example.com',
                 rules: {
                     required: true,
                     min: 0,
