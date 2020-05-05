@@ -156,6 +156,10 @@ class DynamicForm extends Component {
                     // If the server responded with some validation errors.
                     if(error.response.data.errors) {
                         fieldErrors = error.response.data.errors
+                    } else if(error.response.data.message) {
+                        requestErrors = [
+                            error.response.data.message
+                        ];
                     } else {
                         // Otherwise take the status code and text from the response
                         if(error.response && error.response.status && error.response.statusText) {
