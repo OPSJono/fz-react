@@ -381,7 +381,7 @@ class DynamicForm extends Component {
                     </label>
                 </div>
                 <div className="text-sm leading-5">
-                    <Link to="/password/forgotten"
+                    <Link to="/password/request"
                           className="font-medium text-indigo-600 hover:text-indigo-400 focus:outline-none focus:underline transition ease-in-out duration-150">
                         Forgot your password?
                     </Link>
