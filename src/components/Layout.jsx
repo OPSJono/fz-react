@@ -6,6 +6,7 @@ import Navigation from "./Navigation";
 import Login from "./Login";
 import Logout from "./Logout";
 import Register from "./Register";
+import PasswordRequest from "./PasswordRequest";
 
 class Layout extends Component {
 
@@ -45,6 +46,9 @@ class Layout extends Component {
                                             </Route>
                                             <Route path="/logout">
                                                 <Logout token={this.props.auth.access_token} removeCurrentUser={this.props.removeCurrentUser} />
+                                            </Route>
+                                            <Route path="/password/request">
+                                                <PasswordRequest />
                                             </Route>
                                         </Switch>
                                     </div>
