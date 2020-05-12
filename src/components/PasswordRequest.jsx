@@ -37,6 +37,19 @@ class PasswordRequest extends Component {
                     max: null,
                     regex: null,
                 }
+            },
+            callback_url: {
+                id: 'callback_url',
+                name: 'callback_url',
+                type: 'hidden',
+                label: 'Callback URL',
+                value: 'http://fz-react.docker/password/reset',
+                rules: {
+                    required: true,
+                    min: 0,
+                    max: null,
+                    regex: null,
+                }
             }
         };
     };

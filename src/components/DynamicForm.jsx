@@ -248,7 +248,17 @@ class DynamicForm extends Component {
                     errors: errors,
                 });
             });
+    };
 
+    hiddenInput = field => {
+
+        let input = '<input id="'+field.id+'" name="'+field.name+'" type="'+field.type+'" value="'+field.value+'"/>';
+
+        return (
+            <React.Fragment key={field.id}>
+                {renderHTML(input)}
+            </React.Fragment>
+        );
     };
 
     textInput = field => {
@@ -323,10 +333,14 @@ class DynamicForm extends Component {
     };
 
     renderField = field => {
-        const suportedFields = ["text", "password", "email"];
+        const suportedFields = ["text", "password", "email", "hidden"];
 
         if(!suportedFields.includes(field.type)) {
             return 'Unsupported field type';
+        }
+
+        if(field.type === "hidden") {
+            return this.hiddenInput(field);
         }
 
         return this.textInput(field);
