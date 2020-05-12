@@ -78,11 +78,17 @@ class DynamicForm extends Component {
 
     displayGeneralErrors = () => {
         let errors = [];
-        if(this.state.errors.general) {
-            errors.push(this.state.errors.general);
+        if(this.state.errors.general && this.state.errors.general.length > 0) {
+            this.state.errors.general.map((error, i) => {
+                errors.push(error);
+                return error;
+            });
         }
-        if(this.state.errors.request) {
-            errors.push(this.state.errors.request);
+        if(this.state.errors.request && this.state.errors.request.length > 0) {
+            this.state.errors.request.map((error, i) => {
+                errors.push(error);
+                return error;
+            });
         }
 
         if(!errors.length > 0) {
@@ -109,6 +115,15 @@ class DynamicForm extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
+        // Reset any errors in the form before submitting.
+        this.setState({
+            ...this.state,
+            errors: {
+                general: [],
+                request: [],
+                fields: {}
+            },
+        });
 
         const data = new FormData(event.target);
 
@@ -141,6 +156,8 @@ class DynamicForm extends Component {
             if(this.state.fields[key].rules.required && (!data.get(fieldName) || data.get(fieldName).length === 0)) {
                 tmpErrors[fieldName] = ["The "+fieldLabel+" field is required."];
             }
+
+            return true;
         });
 
         if(Object.keys(tmpErrors).length > 0) {
@@ -158,6 +175,20 @@ class DynamicForm extends Component {
 
         await axios.post(this.state.request_details.request_uri, data, this.state.request_details.request_headers)
             .then(response => {
+                if(response.data.errors && response.data.errors.length > 0) {
+                    const errors = {
+                        ...this.state.errors,
+                        fields: response.data.errors,
+                    };
+
+                    this.setState({
+                        ...this.state,
+                        errors: errors,
+                    });
+
+                    return;
+                }
+
                 if(typeof this.props.callback === "function") {
                     this.props.callback(response);
                 } else {
@@ -215,8 +246,8 @@ class DynamicForm extends Component {
                 this.setState({
                     ...this.state,
                     errors: errors,
+                });
             });
-        });
 
     };
 
