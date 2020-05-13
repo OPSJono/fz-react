@@ -217,8 +217,12 @@ class DynamicForm extends Component {
                     } else {
                         // Otherwise take the status code and text from the response
                         if(error.response && error.response.status && error.response.statusText) {
+                            let extraInfo = '';
+                            if(typeof error.response.data === 'string') {
+                                extraInfo += "("+error.response.data+")";
+                            }
                             requestErrors = [
-                                error.response.status + ": " + error.response.statusText
+                                error.response.status + ": " + error.response.statusText + " " + extraInfo
                             ];
                         }
                     }

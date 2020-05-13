@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as api from '../constants/api.js';
 import DynamicForm from "./DynamicForm";
+import {Redirect} from "react-router-dom";
 
 class PasswordRequest extends Component {
 
@@ -43,7 +44,7 @@ class PasswordRequest extends Component {
                 name: 'callback_url',
                 type: 'hidden',
                 label: 'Callback URL',
-                value: 'http://fz-react.docker/password/reset',
+                value: 'http://fz-react.docker:3001/password/reset',
                 rules: {
                     required: true,
                     min: 0,
@@ -137,6 +138,9 @@ class PasswordRequest extends Component {
     };
 
     render() {
+        if(this.props.isAuthenticated() === true) {
+            return (<Redirect to="/" />)
+        }
 
         if(this.state.sent === true) {
             return this.success();
