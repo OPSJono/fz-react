@@ -8,6 +8,7 @@ import Logout from "./Logout";
 import Register from "./Register";
 import PasswordRequest from "./PasswordRequest";
 import PasswordReset from "./PasswordReset";
+import Folders from "./Folders";
 
 class Layout extends Component {
 
@@ -39,6 +40,11 @@ class Layout extends Component {
                                             <Route exact path="/">
                                                 {this.landingPage()}
                                             </Route>
+
+                                            <Route path="/folders">
+                                                <Folders token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
                                             <Route path="/login">
                                                 <Login setCurrentUser={this.props.setCurrentUser} isAuthenticated={this.isAuthenticated} />
                                             </Route>

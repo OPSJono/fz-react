@@ -27,6 +27,11 @@ class Navigation extends Component {
             menuItems = [
                 ...baseItems,
                 {
+                    path: '/folders',
+                    text: 'My Folders',
+                    icon: 'folder'
+                },
+                {
                     path: '/logout',
                     text: 'Logout',
                     icon: 'lock'
