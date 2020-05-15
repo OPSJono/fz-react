@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import * as api from '../constants/api.js';
-import DynamicForm from "./DynamicForm";
+import * as api from "./../../constants/api.js";
+import DynamicForm from "./../DynamicForm";
 import {Link, Redirect} from "react-router-dom";
 import axios from "axios";
 

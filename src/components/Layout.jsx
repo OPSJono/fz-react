@@ -3,12 +3,13 @@ import { Switch, Route } from "react-router-dom";
 
 import Navigation from "./Navigation";
 
-import Login from "./Login";
-import Logout from "./Logout";
-import Register from "./Register";
-import PasswordRequest from "./PasswordRequest";
-import PasswordReset from "./PasswordReset";
-import Folders from "./Folders";
+import Login from "./auth/Login";
+import Logout from "./auth/Logout";
+import Register from "./auth/Register";
+import PasswordRequest from "./auth/PasswordRequest";
+import PasswordReset from "./auth/PasswordReset";
+import RootFolders from "./folders/RootFolders";
+import ViewFolder from "./folders/ViewFolder";
 
 class Layout extends Component {
 
@@ -41,8 +42,12 @@ class Layout extends Component {
                                                 {this.landingPage()}
                                             </Route>
 
-                                            <Route path="/folders">
-                                                <Folders token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            <Route exact path="/folders">
+                                                <RootFolders token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
+                                            <Route path="/folders/:id/view">
+                                                <ViewFolder token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
                                             </Route>
 
                                             <Route path="/login">

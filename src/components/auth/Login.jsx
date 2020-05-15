@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {Link, Redirect} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import DynamicForm from './DynamicForm.jsx';
-import * as api from '../constants/api.js';
+import DynamicForm from "./../DynamicForm";
+import * as api from "./../../constants/api.js";
 
 class Login extends Component {
 

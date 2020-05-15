@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import axios from 'axios';
 import renderHTML from 'react-render-html';
-import * as api from '../constants/api.js';
+import * as api from "./../constants/api.js";
 
 class DynamicForm extends Component {
 

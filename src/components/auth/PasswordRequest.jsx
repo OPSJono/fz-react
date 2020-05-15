@@ -1,40 +1,70 @@
 import React, { Component } from 'react';
-import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import * as api from '../constants/api.js';
+import * as api from "./../../constants/api.js";
+import DynamicForm from "./../DynamicForm";
+import {Redirect} from "react-router-dom";
 
-class Logout extends Component {
+class PasswordRequest extends Component {
 
     state = {
-        loggedOut: null,
         errors: [],
+        email: null,
+        sent: null,
     };
 
-    componentDidMount = async () => {
-        await axios.post(api.BASE_DOMAIN+'/v1/oauth/logout', {}, {
-            headers: { Authorization: "Bearer " + this.props.token }
-        })
-            .then(response => {
-                this.setState({
-                    loggedOut: response.data.success,
-                    errors: []
-                });
-            })
-            .catch(error => {
-                let errors = [];
-                errors.push(error.response.statusText);
+    formRequest = () => {
+        return {
+            request_uri: api.BASE_DOMAIN+'/v1/oauth/password/request',
+            request_method: 'POST',
+            request_headers: {},
+            request_button: {
+                text: "Send reset email",
+                class: "btn-primary"
+            }
+        };
+    };
 
-                if(error.response && error.response.status === 401) {
-                    errors.push("(You are not signed in)")
+    formFields = () => {
+        return {
+            email: {
+                id: 'email',
+                name: 'email',
+                type: 'email',
+                label: 'Email',
+                placeholder: 'johnsmith@example.com',
+                rules: {
+                    required: true,
+                    min: 0,
+                    max: null,
+                    regex: null,
                 }
-                this.setState({
-                    loggedOut: false,
-                    errors: errors,
-                });
-            }).then(response => {
-                this.props.removeCurrentUser();
-            });
+            },
+            callback_url: {
+                id: 'callback_url',
+                name: 'callback_url',
+                type: 'hidden',
+                label: 'Callback URL',
+                value: 'http://fz-react.docker:3001/password/reset',
+                rules: {
+                    required: true,
+                    min: 0,
+                    max: null,
+                    regex: null,
+                }
+            }
+        };
+    };
+
+    callback = response => {
+        if(response.data) {
+            response = response.data;
+        }
+        const success = response.data.sent;
+
+        this.setState({
+            ...this.state,
+            sent: success,
+        });
     };
 
     success = () => {
@@ -44,7 +74,7 @@ class Logout extends Component {
                     <div className="md:w-full lg:w-1/2mx-auto text-center">
                         <FontAwesomeIcon icon={"check"} className="fa-4x text-blue-400 pr-3" />
                         <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                            Signed out!
+                            Email sent!
                         </h2>
                     </div>
 
@@ -52,16 +82,8 @@ class Logout extends Component {
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <div className="text-center">
                                 <h4 className="block font-bold leading-5 text-gray-400">
-                                    You have successfully signed out!
+                                    We have sent you an email with a link to reset your password.
                                 </h4>
-                            </div>
-
-                            <div className="mt-6">
-                                <div className="mt-1 block w-full rounded-md shadow-sm">
-                                    <Link to="/login" className="w-full flex justify-center btn btn-default">
-                                        Sign in
-                                    </Link>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -77,7 +99,7 @@ class Logout extends Component {
                     <div className="md:w-full lg:w-1/2mx-auto text-center">
                         <FontAwesomeIcon icon={"times"} className="fa-4x text-blue-400 pr-3" />
                         <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                            Unable to sign out.
+                            Whoops!
                         </h2>
                     </div>
 
@@ -85,8 +107,8 @@ class Logout extends Component {
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <div className="text-center">
                                 <h4 className="block font-bold leading-5 text-gray-400">
-                                    There has been an error trying to sign you out. <br />
-                                    Please clear all local storage and cookies from your browser and try again.
+                                    There has been an error trying to send you a password reset email. <br />
+                                    Please try again later, if the problem persits please contact support.
                                 </h4>
                                 {this.requestError()}
                             </div>
@@ -116,12 +138,15 @@ class Logout extends Component {
     };
 
     render() {
+        if(this.props.isAuthenticated() === true) {
+            return (<Redirect to="/" />)
+        }
 
-        if(this.state.loggedOut === true) {
+        if(this.state.sent === true) {
             return this.success();
         }
 
-        if(this.state.loggedOut === false) {
+        if(this.state.sent === false) {
             return this.failed();
         }
 
@@ -129,19 +154,15 @@ class Logout extends Component {
             <React.Fragment>
                 <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
                     <div className="md:w-full lg:w-1/2mx-auto text-center">
-                        <FontAwesomeIcon icon={"spinner"} className="fa-4x fa-spin text-blue-400 pr-3" />
+                        <FontAwesomeIcon icon={"envelope"} className="fa-4x text-blue-400 pr-3" />
                         <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                            Signing out
+                            Request password reset
                         </h2>
                     </div>
 
                     <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                            <div className="text-center">
-                                <h4 className="block font-bold leading-5 text-gray-400">
-                                    We are signing you out. Please wait.
-                                </h4>
-                            </div>
+                            <DynamicForm request={this.formRequest} fields={this.formFields} callback={this.callback} />
                         </div>
                     </div>
                 </div>
@@ -153,4 +174,4 @@ class Logout extends Component {
 
 }
 
-export default Logout;
+export default PasswordRequest;

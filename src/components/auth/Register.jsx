@@ -3,8 +3,8 @@ import {Link, Redirect} from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import * as api from '../constants/api.js';
-import DynamicForm from "./DynamicForm";
+import * as api from "./../../constants/api.js";
+import DynamicForm from "./../DynamicForm";
 
 class Register extends Component {
 
