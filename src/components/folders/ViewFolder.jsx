@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as api from "./../../constants/api.js";
-import {Redirect, useParams, withRouter} from "react-router-dom";
+import {Link, Redirect, withRouter} from "react-router-dom";
 import ListFolders from "./ListFolders"
 import axios from "axios";
+import ListFiles from "./ListFiles";
 
 class RootFolders extends Component {
 
@@ -101,6 +102,35 @@ class RootFolders extends Component {
         return (
             <React.Fragment>
                 <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
+
+                    <div className="mt-0 md:w-full lg:w-2/3 mx-auto">
+                        <div className="bg-gray-800 align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg">
+                            <table className="min-w-full bg-gray-700">
+                                <thead className="bg-gray-800">
+                                <tr>
+                                    <th className="px-6 py-3 border-b border-gray-200 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th className="px-6 py-3 border-b border-gray-200 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                        Description
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody className="bg-gray-700">
+                                    <tr key={this.state.current_folder.id}>
+                                        <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 leading-5 text-gray-200">
+                                            {this.state.current_folder.name}
+                                        </td>
+                                        <td className="px-6 py-4 border-b border-gray-200 text-sm leading-5 text-gray-200">
+                                            {this.state.current_folder.description}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
                     <div className="md:w-full lg:w-1/2mx-auto text-center">
                         <div className="flex items-center justify-center">
                             <div className="flex-shrink-0 h-12 w-12 mr-6">
@@ -130,7 +160,7 @@ class RootFolders extends Component {
                         </div>
                     </div>
 
-                    <ListFolders folders={this.state.files} />
+                    <ListFiles files={this.state.files} />
                 </div>
             </React.Fragment>
         );
