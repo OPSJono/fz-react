@@ -58,6 +58,25 @@ class Navigation extends Component {
         };
     }
 
+    classNamesForMenuItem = (item) => {
+        let baseClasses = "block py-1 md:py-2 pl-1 align-middle text-gray-400 no-underline hover:text-gray-100 hover:border-blue-400";
+        let activeClasses = " border-b-2 text-blue-400 border-blue-400";
+
+        let returnClass = baseClasses;
+
+        if(item.path === '/') {
+            if(item.path === this.props.location.pathname) {
+                returnClass += activeClasses;
+            }
+        } else {
+            if(this.props.location.pathname.startsWith(item.path)) {
+                returnClass += activeClasses;
+            }
+        }
+
+        return returnClass;
+    }
+
     menuItems = () => {
         return (
             <div className="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20"
@@ -66,10 +85,7 @@ class Navigation extends Component {
                     {this.state.menuItems.map(item => (
                         <li key={item.path} onClick={this.handleClick.bind(item.path)} className="mr-6 my-2 md:my-0">
                             <Link to={item.path}
-                                  className={this.props.location.pathname === item.path
-                                ? 'block py-1 md:py-2 pl-1 align-middle  text-gray-400 no-underline hover:text-gray-100 hover:border-blue-400 border-b-2 text-blue-400 border-blue-400'
-                                : 'block py-1 md:py-2 pl-1 align-middle  text-gray-400 no-underline hover:text-gray-100 hover:border-blue-400'
-                            }>
+                                  className={this.classNamesForMenuItem(item)}>
                                 <FontAwesomeIcon icon={item.icon} className="mr-3 text-blue-400" />
                                 <span className="pb-1 md:pb-0 text-sm ">{item.text}</span>
                             </Link>

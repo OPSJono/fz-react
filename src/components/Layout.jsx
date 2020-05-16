@@ -10,6 +10,7 @@ import PasswordRequest from "./auth/PasswordRequest";
 import PasswordReset from "./auth/PasswordReset";
 import RootFolders from "./folders/RootFolders";
 import ViewFolder from "./folders/ViewFolder";
+import EditFolder from "./folders/EditFolder";
 
 class Layout extends Component {
 
@@ -48,6 +49,10 @@ class Layout extends Component {
 
                                             <Route path="/folders/:id/view">
                                                 <ViewFolder token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
+                                            <Route path="/folders/:id/edit">
+                                                <EditFolder token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
                                             </Route>
 
                                             <Route path="/login">

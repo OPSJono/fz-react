@@ -52,6 +52,9 @@ class DynamicForm extends Component {
             request: [],
             fields: {}
         },
+        success: {
+            general: [],
+        },
     };
 
     static GRANT_TYPE = 'password';
@@ -75,6 +78,37 @@ class DynamicForm extends Component {
             errors: {},
         })
     }
+
+    displaySuccessMessages = () => {
+        let success = [];
+        if(this.state.success.general && this.state.success.general.length > 0) {
+            this.state.success.general.map((error, i) => {
+                success.push(error);
+                return error;
+            });
+        }
+
+        if(!success.length > 0) {
+            return null;
+        }
+        return (
+            <div className="bg-green-300 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-12 -mt-2" role="alert">
+                <strong className="font-bold">
+                    <FontAwesomeIcon icon="check-square" className="text-green-700 mr-2" />
+                    Success!
+                </strong>
+                <ul>
+                    {success.map((message, i) => {
+                        return (<li className="pt-2" key={i}>
+                            <div className="flex items-center text-sm leading-5 text-green-800">
+                                {message}
+                            </div>
+                        </li>)
+                    })}
+                </ul>
+            </div>
+        );
+    };
 
     displayGeneralErrors = () => {
         let errors = [];
@@ -122,6 +156,9 @@ class DynamicForm extends Component {
                 general: [],
                 request: [],
                 fields: {}
+            },
+            success: {
+                general: []
             },
         });
 
@@ -189,6 +226,14 @@ class DynamicForm extends Component {
                     return;
                 }
 
+                this.setState({
+                    ...this.state,
+                    success: {
+                        general: [
+                            "Form saved successfully!"
+                        ],
+                    },
+                });
                 if(typeof this.props.callback === "function") {
                     this.props.callback(response);
                 } else {
@@ -279,23 +324,36 @@ class DynamicForm extends Component {
             );
         }
 
-        let input = '<input id="'+field.id+'" name="'+field.name+'" type="'+field.type+'" autoComplete="'+field.id+'" className="'+classNamesForInput+'"';
+        // Basic attributes about the field.
+        let inputAttributes = {
+            id: field.id,
+            name: field.name,
+            type: field.type,
+            autoComplete: field.id,
+            className: classNamesForInput
+        };
+
+        // Initial values and/or placeholders
+        if(field.placeholder != null) {
+            inputAttributes.placeholder = field.placeholder;
+        }
+        if(field.value != null) {
+            inputAttributes.defaultValue = field.value;
+        }
+
+        // HTML5 validation
         if(field.rules.required) {
-            input += ' required';
+            inputAttributes.required = "required";
         }
         if(field.rules.min > 0) {
-            input += ' min="'+field.rules.min+'"';
+            inputAttributes.min = field.rules.min;
         }
         if(field.rules.max > 0) {
-            input += ' max="'+field.rules.max+'"';
+            inputAttributes.max = field.rules.max;
         }
         if(field.rules.pattern != null) {
-            input += ' pattern="'+field.rules.regex+'"';
+            inputAttributes.pattern = field.rules.pattern;
         }
-        if(field.placeholder != null) {
-            input += ' placeholder="'+field.placeholder+'"';
-        }
-        input += " />";
 
         let passwordFieldExtras = '';
         if(this.props.loginForm && this.props.loginForm === true && field.id === 'password') {
@@ -309,7 +367,7 @@ class DynamicForm extends Component {
                     {field.label}
                 </label>
                 <div className="mt-1 rounded-md shadow-sm">
-                    {renderHTML(input)}
+                    <input {...inputAttributes} />
                     {errorMessage}
                 </div>
                 {passwordFieldExtras}
@@ -397,6 +455,7 @@ class DynamicForm extends Component {
     render() {
         return (
             <React.Fragment>
+                {this.displaySuccessMessages()}
                 {this.displayGeneralErrors()}
                 <form className="-mt-6"
                       action={this.state.request_details.uri}

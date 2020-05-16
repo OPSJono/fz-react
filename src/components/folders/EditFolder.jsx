@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import * as api from "./../../constants/api.js";
 import {Link, Redirect, withRouter} from "react-router-dom";
-import ListFolders from "./ListFolders"
-import ListFiles from "./ListFiles";
+import DynamicForm from "../DynamicForm";
 import FolderHelper from "./FolderHelper";
 
-class RootFolders extends Component {
+class EditFolder extends Component {
 
     constructor(props) {
         super(props);
@@ -31,6 +31,55 @@ class RootFolders extends Component {
         }
     }
 
+    formRequest = () => {
+        let url = api.BASE_DOMAIN+'/v1/folders/'+this.state.current_folder.id+'/update';
+
+        return {
+            request_uri: url,
+            request_method: 'POST',
+            request_headers: {
+                headers: { Authorization: "Bearer " + this.props.token }
+            },
+            request_button: {
+                text: "Save",
+                class: "btn-primary"
+            }
+        };
+    };
+
+    formFields = () => {
+        return {
+            name: {
+                id: 'name',
+                name: 'name',
+                type: 'text',
+                label: 'Name',
+                placeholder: 'Folder name',
+                value: this.state.current_folder.name,
+                rules: {
+                    required: true,
+                    min: 0,
+                    max: null,
+                    regex: null,
+                }
+            },
+            description: {
+                id: 'description',
+                name: 'description',
+                type: 'text',
+                label: 'Description',
+                placeholder: 'Description of the folder.',
+                value: this.state.current_folder.description,
+                rules: {
+                    required: true,
+                    min: 0,
+                    max: null,
+                    regex: null,
+                }
+            },
+        };
+    };
+
     loadData = async (folder_id) => {
         let helper = new FolderHelper(this.props.token);
 
@@ -42,76 +91,47 @@ class RootFolders extends Component {
         });
     };
 
+    saved = (response) => {
+        // Handle a plain object or an axios response object
+        if(response.data) {
+            response = response.data;
+        }
+
+        this.setState({
+            ...this.state,
+            current_folder: response.data.folder
+        });
+    };
+
     success = () => {
         return (
             <React.Fragment>
                 <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
 
-                    <div className="mt-0 md:w-full lg:w-2/3 mx-auto">
-                        <div className="bg-gray-800 align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg">
-                            <table className="min-w-full bg-gray-700">
-                                <thead className="bg-gray-800">
-                                <tr>
-                                    <th className="px-6 py-3 border-b border-gray-200 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                        Name
-                                    </th>
-                                    <th className="px-6 py-3 border-b border-gray-200 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                        Description
-                                    </th>
-                                    <th className="px-6 py-3 border-b border-gray-200" />
-                                </tr>
-                                </thead>
-                                <tbody className="bg-gray-700">
-                                    <tr key={this.state.current_folder.id}>
-                                        <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 leading-5 text-gray-200">
-                                            {this.state.current_folder.name}
-                                        </td>
-                                        <td className="px-6 py-4 border-b border-gray-200 text-sm leading-5 text-gray-200">
-                                            {this.state.current_folder.description}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 ">
-                                            <div className="flex items-center justify-center">
-                                                <Link to={"/folders/"+this.state.current_folder.id+"/edit"} className="text-blue-300 hover:text-blue-500 mx-auto">Edit</Link>
-                                                <Link to={"/folders/"+this.state.current_folder.id+"/delete"} className="text-red-300 hover:text-red-500 mx-auto">Delete</Link>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
-                    <div className="md:w-full lg:w-1/2mx-auto text-center">
+                    <div className="md:w-full lg:w-1/3 mx-auto text-center">
                         <div className="flex items-center justify-center">
                             <div className="flex-shrink-0 h-12 w-12 mr-6">
                                 <FontAwesomeIcon icon={"folder"} className="fa-4x text-blue-400 pr-3" />
                             </div>
                             <div className="ml-4">
                                 <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                    Sub Folders
+                                    Edit Folder
                                 </h2>
                             </div>
                         </div>
                     </div>
 
-                    <ListFolders folders={this.state.child_folders} />
-                </div>
-                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
-                    <div className="md:w-full lg:w-1/2mx-auto text-center">
-                        <div className="flex items-center justify-center">
-                            <div className="flex-shrink-0 h-12 w-12 mr-6">
-                                <FontAwesomeIcon icon={"file"} className="fa-4x text-blue-400 pr-3" />
-                            </div>
-                            <div className="ml-4">
-                                <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                    Files
-                                </h2>
+                    <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
+                        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                            <DynamicForm request={this.formRequest} fields={this.formFields} callback={this.saved} />
+                            <div className="mt-2 block w-full rounded-md shadow-sm">
+                                <Link to={"/folders/"+this.state.current_folder.id+"/view"} className="w-full flex justify-center btn btn-default">
+                                    Cancel
+                                </Link>
                             </div>
                         </div>
                     </div>
 
-                    <ListFiles files={this.state.files} />
                 </div>
             </React.Fragment>
         );
@@ -132,7 +152,7 @@ class RootFolders extends Component {
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <div className="text-center">
                                 <h4 className="block font-bold leading-5 text-gray-400">
-                                    There has been an error trying to load your folders. <br />
+                                    There has been an error trying to load the folder. <br />
                                     Please try again later, if the problem persits please contact support.
                                 </h4>
                                 {this.requestError()}
@@ -184,7 +204,7 @@ class RootFolders extends Component {
                         </div>
                         <div className="ml-4">
                             <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                Loading...
+                                Edit Folder
                             </h2>
                         </div>
                     </div>
@@ -192,7 +212,7 @@ class RootFolders extends Component {
                     <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <div className="pb-4 text-center text-gray-400">
-                                <i>Loading folders...</i>
+                                <i>Loading folder...</i>
                             </div>
                         </div>
                     </div>
@@ -205,4 +225,4 @@ class RootFolders extends Component {
 
 }
 
-export default withRouter(RootFolders);
+export default withRouter(EditFolder);
