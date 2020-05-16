@@ -210,6 +210,11 @@ class DynamicForm extends Component {
             return;
         }
 
+        let generalSuccessMessage = "Form saved successfully!";
+        if(this.state.request_details.request_method === "DELETE") {
+            data._method = "DELETE";
+            generalSuccessMessage = "Record deleted!"
+        }
         await axios.post(this.state.request_details.request_uri, data, this.state.request_details.request_headers)
             .then(response => {
                 if(response.data.errors && response.data.errors.length > 0) {
@@ -230,7 +235,7 @@ class DynamicForm extends Component {
                     ...this.state,
                     success: {
                         general: [
-                            "Form saved successfully!"
+                            generalSuccessMessage
                         ],
                     },
                 });
@@ -339,6 +344,10 @@ class DynamicForm extends Component {
         }
         if(field.value != null) {
             inputAttributes.defaultValue = field.value;
+        }
+
+        if(field.readonly != null) {
+            inputAttributes.readOnly = field.readonly;
         }
 
         // HTML5 validation
@@ -452,21 +461,33 @@ class DynamicForm extends Component {
         );
     };
 
+    renderForm = () => {
+        if(this.state.success.general && this.state.success.general.length > 0) {
+            if(this.state.request_details.request_method === "DELETE") {
+                return null;
+            }
+        }
+
+        return (
+            <form className="-mt-6"
+                  action={this.state.request_details.uri}
+                  method={this.state.request_details.request_method}
+                  onSubmit={this.handleSubmit}>
+                {Object.keys(this.state.fields).map((item, i) => {
+                    return this.renderField(this.state.fields[item]);
+                })}
+
+                {this.submitButton()}
+            </form>
+        )
+    };
+
     render() {
         return (
             <React.Fragment>
                 {this.displaySuccessMessages()}
                 {this.displayGeneralErrors()}
-                <form className="-mt-6"
-                      action={this.state.request_details.uri}
-                      method={this.state.request_details.request_method}
-                      onSubmit={this.handleSubmit}>
-                    {Object.keys(this.state.fields).map((item, i) => {
-                        return this.renderField(this.state.fields[item]);
-                    })}
-
-                    {this.submitButton()}
-                </form>
+                {this.renderForm()}
             </React.Fragment>
         );
     };

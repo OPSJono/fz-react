@@ -11,6 +11,7 @@ import PasswordReset from "./auth/PasswordReset";
 import RootFolders from "./folders/RootFolders";
 import ViewFolder from "./folders/ViewFolder";
 import EditFolder from "./folders/EditFolder";
+import DeleteFolder from "./folders/DeleteFolder";
 
 class Layout extends Component {
 
@@ -53,6 +54,10 @@ class Layout extends Component {
 
                                             <Route path="/folders/:id/edit">
                                                 <EditFolder token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
+                                            <Route path="/folders/:id/delete">
+                                                <DeleteFolder token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
                                             </Route>
 
                                             <Route path="/login">

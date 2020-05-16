@@ -12,7 +12,7 @@ class RootFolders extends Component {
 
         this.state = {
             errors: [],
-            folders: [],
+            folders: null,
         };
     }
 
@@ -73,13 +73,28 @@ class RootFolders extends Component {
             this.setState({
                 ...this.state,
                 errors: errors,
-                folders: [],
+                folders: null,
             });
         });
 
     }
 
     success = () => {
+        let folders = (
+            <React.Fragment>
+                <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
+                    <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                        <div className="text-center">
+                            <p className="block font-normal leading-5 text-gray-400"> You don't have any folders available. </p>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+        if(this.state.folders.length > 0) {
+            folders = <ListFolders folders={this.state.folders} />
+        }
+
         return (
             <React.Fragment>
                 <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
@@ -90,7 +105,7 @@ class RootFolders extends Component {
                         </h2>
                     </div>
 
-                    <ListFolders folders={this.state.folders} />
+                    {folders}
                 </div>
             </React.Fragment>
         );
@@ -146,7 +161,7 @@ class RootFolders extends Component {
             return (<Redirect to="/login" />)
         }
 
-        if(this.state.folders && this.state.folders.length > 0) {
+        if(this.state.folders && this.state.folders != null) {
             return this.success();
         }
 
