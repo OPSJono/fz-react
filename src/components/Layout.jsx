@@ -12,6 +12,9 @@ import RootFolders from "./folders/RootFolders";
 import ViewFolder from "./folders/ViewFolder";
 import EditFolder from "./folders/EditFolder";
 import DeleteFolder from "./folders/DeleteFolder";
+import ViewFile from "./files/ViewFile";
+import EditFile from "./files/EditFile";
+import DeleteFile from "./files/DeleteFile";
 
 class Layout extends Component {
 
@@ -58,6 +61,18 @@ class Layout extends Component {
 
                                             <Route path="/folders/:id/delete">
                                                 <DeleteFolder token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
+                                            <Route path="/files/:id/view">
+                                                <ViewFile token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
+                                            <Route path="/files/:id/edit">
+                                                <EditFile token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
+                                            </Route>
+
+                                            <Route path="/files/:id/delete">
+                                                <DeleteFile token={this.props.auth.access_token} isAuthenticated={this.isAuthenticated} />
                                             </Route>
 
                                             <Route path="/login">

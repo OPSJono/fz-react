@@ -211,11 +211,16 @@ class DynamicForm extends Component {
         }
 
         let generalSuccessMessage = "Form saved successfully!";
-        if(this.state.request_details.request_method === "DELETE") {
-            data._method = "DELETE";
+        if(this.state.request_details.request_method.toUpperCase() === "DELETE") {
             generalSuccessMessage = "Record deleted!"
         }
-        await axios.post(this.state.request_details.request_uri, data, this.state.request_details.request_headers)
+
+        await axios({
+            method: this.state.request_details.request_method.toUpperCase(),
+            url: this.state.request_details.request_uri,
+            data: data,
+            headers: this.state.request_details.request_headers.headers,
+        }, this.state.request_details.request_headers)
             .then(response => {
                 if(response.data.errors && response.data.errors.length > 0) {
                     const errors = {

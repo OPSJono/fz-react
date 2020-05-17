@@ -209,7 +209,7 @@ class DeleteFolder extends Component {
                         </div>
                         <div className="ml-4">
                             <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                Edit Folder
+                                Delete Folder
                             </h2>
                         </div>
                     </div>

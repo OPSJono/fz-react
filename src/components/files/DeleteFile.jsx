@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import * as api from "./../../constants/api.js";
 import {Link, Redirect, withRouter} from "react-router-dom";
-import ListFolders from "./ListFolders"
-import ListFiles from "./../files/ListFiles";
-import FolderHelper from "./FolderHelper";
+import DynamicForm from "../DynamicForm";
+import FileHelper from "./FileHelper";
 
-class ViewFolder extends Component {
+class DeleteFile extends Component {
 
     constructor(props) {
         super(props);
@@ -13,15 +13,14 @@ class ViewFolder extends Component {
 
         this.state = {
             errors: [],
-            folder_id: id,
-            current_folder: null,
-            child_folders: [],
-            files: [],
+            file_id: id,
+            current_file: null,
+            deleted: null,
         };
     }
 
     componentDidMount() {
-        this.loadData(this.state.folder_id).then(r => {});
+        this.loadData(this.state.file_id).then(r => {});
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -31,10 +30,51 @@ class ViewFolder extends Component {
         }
     }
 
-    loadData = async (folder_id) => {
-        let helper = new FolderHelper(this.props.token);
+    formRequest = () => {
+        let url = api.BASE_DOMAIN+'/v1/files/'+this.state.current_file.id+'/delete';
 
-        let values = await helper.load(folder_id);
+        return {
+            request_uri: url,
+            request_method: 'DELETE',
+            request_headers: {
+                headers: { Authorization: "Bearer " + this.props.token }
+            },
+            request_button: {
+                text: "Delete",
+                class: "btn-danger"
+            }
+        };
+    };
+
+    formFields = () => {
+        return {
+            name: {
+                id: 'name',
+                name: 'name',
+                type: 'text',
+                label: 'Name',
+                placeholder: 'File name',
+                readonly: true,
+                value: this.state.current_file.name,
+                rules: {},
+            },
+            description: {
+                id: 'description',
+                name: 'description',
+                type: 'text',
+                label: 'Description',
+                placeholder: 'Description of the file.',
+                readonly: true,
+                value: this.state.current_file.description,
+                rules: {}
+            },
+        };
+    };
+
+    loadData = async (file_id) => {
+        let helper = new FileHelper(this.props.token);
+
+        let values = await helper.load(file_id);
 
         this.setState({
             ...this.state,
@@ -42,76 +82,59 @@ class ViewFolder extends Component {
         });
     };
 
+    saved = (response) => {
+        // Handle a plain object or an axios response object
+        if(response.data) {
+            response = response.data;
+        }
+
+        this.setState({
+            ...this.state,
+            deleted: response.success
+        });
+    };
+
     success = () => {
+        let button = (
+            <div className="mt-2 block w-full rounded-md shadow-sm">
+                <Link to={"/folders/"+this.state.current_file.folder_id+"/view"} className="w-full flex justify-center btn btn-default">
+                    Return to list
+                </Link>
+            </div>
+        );
+
+        if(this.state.deleted !== true) {
+            button = (
+                <div className="mt-2 block w-full rounded-md shadow-sm">
+                    <Link to={"/folders/"+this.state.current_file.folder_id+"/view"} className="w-full flex justify-center btn btn-default">
+                        Cancel
+                    </Link>
+                </div>
+            );
+        }
+
         return (
             <React.Fragment>
                 <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
 
-                    <div className="mt-0 md:w-full lg:w-2/3 mx-auto">
-                        <div className="bg-gray-800 align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg">
-                            <table className="min-w-full bg-gray-700">
-                                <thead className="bg-gray-800">
-                                <tr>
-                                    <th className="px-6 py-3 border-b border-gray-200 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                        Name
-                                    </th>
-                                    <th className="px-6 py-3 border-b border-gray-200 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                        Description
-                                    </th>
-                                    <th className="px-6 py-3 border-b border-gray-200" />
-                                </tr>
-                                </thead>
-                                <tbody className="bg-gray-700">
-                                    <tr key={this.state.current_folder.id}>
-                                        <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 leading-5 text-gray-200">
-                                            {this.state.current_folder.name}
-                                        </td>
-                                        <td className="px-6 py-4 border-b border-gray-200 text-sm leading-5 text-gray-200">
-                                            {this.state.current_folder.description}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 ">
-                                            <div className="flex items-center justify-center">
-                                                <Link to={"/folders/"+this.state.current_folder.id+"/edit"} className="text-blue-300 hover:text-blue-500 mx-auto">Edit</Link>
-                                                <Link to={"/folders/"+this.state.current_folder.id+"/delete"} className="text-red-300 hover:text-red-500 mx-auto">Delete</Link>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
-                    <div className="md:w-full lg:w-1/2mx-auto text-center">
-                        <div className="flex items-center justify-center">
-                            <div className="flex-shrink-0 h-12 w-12 mr-6">
-                                <FontAwesomeIcon icon={"folder"} className="fa-4x text-blue-400 pr-3" />
-                            </div>
-                            <div className="ml-4">
-                                <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                    Sub Folders
-                                </h2>
-                            </div>
-                        </div>
-                    </div>
-
-                    <ListFolders folders={this.state.child_folders} />
-                </div>
-                <div className="flex flex-col justify-center py-4 sm:px-6 lg:px-8">
-                    <div className="md:w-full lg:w-1/2mx-auto text-center">
+                    <div className="md:w-full lg:w-1/3 mx-auto text-center">
                         <div className="flex items-center justify-center">
                             <div className="flex-shrink-0 h-12 w-12 mr-6">
                                 <FontAwesomeIcon icon={"file"} className="fa-4x text-blue-400 pr-3" />
                             </div>
                             <div className="ml-4">
                                 <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                    Files
+                                    Delete File
                                 </h2>
                             </div>
                         </div>
                     </div>
-
-                    <ListFiles files={this.state.files} />
+                    <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
+                        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                            <DynamicForm request={this.formRequest} fields={this.formFields} callback={this.saved} />
+                            {button}
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>
         );
@@ -132,7 +155,7 @@ class ViewFolder extends Component {
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <div className="text-center">
                                 <h4 className="block font-bold leading-5 text-gray-400">
-                                    There has been an error trying to load your folders. <br />
+                                    There has been an error trying to load the file. <br />
                                     Please try again later, if the problem persits please contact support.
                                 </h4>
                                 {this.requestError()}
@@ -167,7 +190,7 @@ class ViewFolder extends Component {
             return (<Redirect to="/login" />)
         }
 
-        if(this.state.current_folder != null) {
+        if(this.state.current_file != null) {
             return this.success();
         }
 
@@ -184,7 +207,7 @@ class ViewFolder extends Component {
                         </div>
                         <div className="ml-4">
                             <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-400">
-                                Loading...
+                                Delete File
                             </h2>
                         </div>
                     </div>
@@ -192,7 +215,7 @@ class ViewFolder extends Component {
                     <div className="mt-8 md:w-full lg:w-1/3 mx-auto">
                         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
                             <div className="pb-4 text-center text-gray-400">
-                                <i>Loading folders...</i>
+                                <i>Loading file...</i>
                             </div>
                         </div>
                     </div>
@@ -205,4 +228,4 @@ class ViewFolder extends Component {
 
 }
 
-export default withRouter(ViewFolder);
+export default withRouter(DeleteFile);
